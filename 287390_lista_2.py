@@ -72,7 +72,7 @@ def zmierz_min(f, serie_min=5, min_time=0.2):
 
 ## ZADANIE 2
 def xgcd(a, b):
-    '''a*x + b*y = gcd(a, b)'''
+    """a*x + b*y = gcd(a, b)"""
     if b == 0:
         return (a, 1, 0)
     else:
@@ -88,14 +88,68 @@ def diofantyczne_ma_rozwiazanie(a, b, c):
          return False
 
 def diofantyczne_rozwiazanie(a, b, c):
-    if diofantyczne_ma_rozwiazanie(a, b, c):
-        gcd, xp, yp = xgcd(a, b)
-        x = (xp * c) / gcd
-        y = (yp * c) / gcd
+    gcd, x0, y0 = xgcd(a, b)
+    if c % gcd != 0:
+        return None
+    k = c // gcd
+    return x0 * k, y0 * k
 
-        return x, y
+def diofantyczne_nieujemne(a, b, c):
+    rozwiazanie = diofantyczne_rozwiazanie(a, b, c)
+    if rozwiazanie is None:
+        return set()
+    x0, y0 = rozwiazanie
+    gcd, *_ = xgcd(a, b)
+    nww = abs(a * b) / gcd
+    zbior_rozw = []
+    a_div = a // gcd
+    b_div = b // gcd
 
+    if x0 < 0:
+        kres1 = math.ceil(-x0 / a_div)
+    else:
+        kres1 = 0
 
+    if y0 < 0:
+        kres2 = math.ceil(-y0 / b_div)
+    else:
+        kres2 = 0
+
+    limdol = min(kres1, kres2)
+    limgora = max(kres1, kres2)
+
+    for k in range(limdol, limgora + 1):
+        x = x0 - k * b_div
+        y = y0 + k * a_div
+        if x >= 0 and y >= 0:
+            zbior_rozw.append((x, y))
+
+    return zbior_rozw
+
+def Alfred():
+    skok_krotki = 84
+    skok_dlugi = 228
+    dom_alfred = 430
+    dom_horacy = 432
+
+    if diofantyczne_ma_rozwiazanie(skok_krotki, skok_dlugi, dom_alfred):
+        print(diofantyczne_nieujemne(skok_krotki, skok_dlugi, dom_alfred))
+        ilosc_krokow = min([abs(x[0]-x[1]) for x in diofantyczne_nieujemne(skok_krotki, skok_dlugi, dom_alfred)])
+        print(f'Alfred śpi w swoim domu i dotrze do niego w {ilosc_krokow} kroków')
+    elif diofantyczne_ma_rozwiazanie(skok_krotki, skok_dlugi, dom_horacy):
+        ilosc_krokow = min([abs(x[0]-x[1]) for x in diofantyczne_nieujemne(skok_krotki, skok_dlugi, dom_horacy)])
+        print(f'Alfred śpi w domu Horacego i dotrze do niego w {ilosc_krokow} kroków')
+    else:
+        print(f'Alfred śpi pod gołym niebem')
+
+def zadanie_3(k):
+    res = 1
+    for i in range(1, k+1):
+        gcd = xgcd(i, res)[0]
+        res = (res * i) / gcd
+    return int(res)
+
+##zadanie 3
 if __name__ == '__main__':
     def zadanie_1():
         time_res = {'Newton_silnia':[], 'Newton_iteracja':[], 'Newton_rekurencja':[]}
@@ -124,8 +178,8 @@ if __name__ == '__main__':
         plt.show()
 
     def zadanie_2():
-        print(diofantyczne_ma_rozwiazanie(18, 16, 500))
-        print(diofantyczne_rozwiazanie(18, 16, 500))
+        Alfred()
 
     # zadanie_1()
-    zadanie_2()
+    # zadanie_2()
+    # print(zadanie_3(5))
