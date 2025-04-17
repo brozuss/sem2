@@ -84,9 +84,40 @@ def zadanie_1():
         print(x)
 
 
+def zadanie_2():
+    def levenshtein(napis1, napis2):
+        if len(napis1) == 0:
+            return len(napis2)
+        elif len(napis2) == 0:
+            return len(napis1)
+        elif napis1[-1] == napis2[-1]:
+            return levenshtein(napis1[:-1], napis2[:-1])
+        else:
+            fir = levenshtein(napis1, napis2[:-1]) + 1
+            sec = levenshtein(napis1[:-1], napis2) + 1
+            thd = levenshtein(napis1[-1], napis2[:-1]) + 2
+            return min(fir, sec, thd)
+
+    def guess(napis, lista):
+        dict = {}
+
+        for i in lista:
+            dict[i] = levenshtein(napis, i)
+        min_val = min(dict.values())
+
+        min_keys = [k for k, v in dict.items() if v == min_val]
+        return min_keys
+
+
+    napis = ['lista']
+    lista = ['ala', 'ma', 'kota', 'olek', 'ma', 'kotki']
+    # print(levenshtein('ala ma kota', 'olek ma kotki'))
+    print(guess(napis, lista))
+
+
 if __name__ == '__main__':
-    print("zadanie 1:")
-    zadanie_1()
+    # print("zadanie 1:")
+    # zadanie_1()
     # print("\nzadanie 2:")
-    #
+    zadanie_2()
     # print("\nzadanie 3:")
